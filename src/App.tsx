@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { GameSave } from "./backend/GameSave";
+import { get_game_saves } from "./backend/api";
+import GameSaveList from "./components/GameSaveList";
 
-function App() {
+const App: React.FC = () => {
+  const [gameSaves, setGameSaves] = useState<GameSave[]>([]);
+
+  useEffect(() => {
+    get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <span className="heading">PkROAM</span>
+      <GameSaveList saves={gameSaves} setGameSaves={setGameSaves} />
     </div>
   );
-}
+};
 
 export default App;

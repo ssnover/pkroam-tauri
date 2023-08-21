@@ -66,18 +66,6 @@ pub enum Game {
     LeafGreen = 4,
 }
 
-impl Game {
-    pub fn variants() -> Vec<Game> {
-        vec![
-            Game::Ruby,
-            Game::Sapphire,
-            Game::Emerald,
-            Game::FireRed,
-            Game::LeafGreen,
-        ]
-    }
-}
-
 impl std::fmt::Display for Game {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match *self {
