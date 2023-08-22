@@ -22,8 +22,8 @@ const GameSaveEntry: React.FC<Props> = ({
           setSelectedSave(save);
         }}
       >
-        {save.trainer_name} {save.save_path} [
-        {game_name_from_game_id(save.game_id)}]
+        {save.trainer_name}[{save.trainer_id}] -{" "}
+        {game_name_from_game_id(save.game_id)}
       </span>
     </div>
   );

@@ -20,6 +20,7 @@ impl AppPaths {
         database_path
     }
 
+    #[allow(unused)]
     pub fn get_backup_path(&self) -> PathBuf {
         let mut backup_path = self.config_dir.clone();
         backup_path.push(".backups");

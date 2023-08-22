@@ -11,6 +11,9 @@ pub struct GameSave {
     pub trainer_name: String,
     pub trainer_id: u32,
     pub secret_id: u32,
+    pub playtime_hours: u32,
+    pub playtime_minutes: u32,
+    pub playtime_frames: u32,
     pub connected: bool,
     pub save_path: String,
 }
@@ -23,6 +26,9 @@ impl From<types::GameSave> for GameSave {
             trainer_name: value.data.trainer_name,
             trainer_id: value.data.trainer_id,
             secret_id: value.data.secret_id,
+            playtime_hours: value.data.playtime.hours,
+            playtime_minutes: value.data.playtime.minutes,
+            playtime_frames: value.data.playtime.frames,
             connected: value.data.connected,
             save_path: value.data.save_path.to_string_lossy().to_string(),
         }

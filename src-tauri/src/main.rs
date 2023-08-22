@@ -3,10 +3,7 @@
 
 use clap::Parser;
 use database::DbConn;
-use std::{
-    path::PathBuf,
-    sync::{Arc, Mutex},
-};
+use std::{path::PathBuf, sync::Mutex};
 
 mod app_paths;
 mod commands;
@@ -42,7 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    logging::initialize(args.enable_debug, &app_paths.get_log_path())?;
+    logging::initialize(true, &app_paths.get_log_path())?;
     if args.enable_debug {
         println!("Logging to path: {}", &app_paths.get_log_path().display());
     }
@@ -54,7 +51,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     tauri::Builder::default()
         .manage(app_state)
-        .invoke_handler(tauri::generate_handler![commands::get_game_saves])
+        .invoke_handler(tauri::generate_handler![
+            commands::get_game_saves,
+            commands::add_new_save,
+            commands::log_debug,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

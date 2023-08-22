@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-
 use num_derive::{FromPrimitive, ToPrimitive};
+use num_traits::FromPrimitive;
+use std::path::{Path, PathBuf};
 
 #[derive(Clone, Debug)]
 pub struct GameSave {
@@ -20,6 +20,7 @@ pub struct GameSaveData {
     pub trainer_name: String,
     pub trainer_id: u32,
     pub secret_id: u32,
+    pub playtime: Playtime,
     pub connected: bool,
     pub save_path: PathBuf,
 }
@@ -30,6 +31,9 @@ impl GameSaveData {
         trainer_name: &str,
         trainer_id: u32,
         secret_id: u32,
+        playtime_hours: u32,
+        playtime_minutes: u32,
+        playtime_frames: u32,
         save_path: PathBuf,
     ) -> Self {
         Self {
@@ -37,9 +41,28 @@ impl GameSaveData {
             trainer_name: trainer_name.to_owned(),
             trainer_id,
             secret_id,
+            playtime: Playtime::new(playtime_hours, playtime_minutes, playtime_frames),
             connected: save_path.exists(),
             save_path,
         }
+    }
+
+    pub fn from_path(p: impl AsRef<Path>, game_id: u32) -> std::io::Result<Self> {
+        let save_file = pkroam::save::SaveFile::new(&p)?;
+        let trainer_info = save_file.get_trainer_info();
+        Ok(Self {
+            game: Game::from_u32(game_id).unwrap(),
+            trainer_name: trainer_info.player_name,
+            trainer_id: trainer_info.id.public_id.into(),
+            secret_id: trainer_info.id.secret_id.into(),
+            playtime: Playtime::new(
+                trainer_info.time_played.hours.into(),
+                trainer_info.time_played.minutes.into(),
+                trainer_info.time_played.frames.into(),
+            ),
+            connected: true,
+            save_path: p.as_ref().to_owned(),
+        })
     }
 }
 
@@ -57,7 +80,24 @@ impl std::fmt::Display for GameSaveData {
     }
 }
 
-#[derive(FromPrimitive, ToPrimitive, Clone, Debug)]
+#[derive(Clone, Debug)]
+pub struct Playtime {
+    pub hours: u32,
+    pub minutes: u32,
+    pub frames: u32,
+}
+
+impl Playtime {
+    pub fn new(hours: u32, minutes: u32, frames: u32) -> Self {
+        Playtime {
+            hours,
+            minutes,
+            frames,
+        }
+    }
+}
+
+#[derive(FromPrimitive, ToPrimitive, Copy, Clone, Debug)]
 pub enum Game {
     Ruby = 0,
     Sapphire = 1,

@@ -13,3 +13,7 @@ export function game_name_from_game_id(id: number): string {
     return "Unknown Game";
   }
 }
+
+export function game_id_variants(): Array<number> {
+  return Array.from(Array(5).keys());
+}

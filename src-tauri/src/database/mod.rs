@@ -39,14 +39,14 @@ impl DbConn {
     }
 
     fn migrate_database(&self) -> rusqlite::Result<()> {
-        todo!();
+        todo!()
     }
 
     pub fn get_saves(&self) -> rusqlite::Result<Vec<GameSave>> {
         let mut stmt = self.conn.prepare(statements::SELECT_SAVES)?;
         let iter = stmt.query_map([], |row| {
             let trainer_name: String = row.get(2)?;
-            let save_path: String = row.get(5)?;
+            let save_path: String = row.get(8)?;
             Ok(GameSave::new(
                 row.get(0)?,
                 GameSaveData::new(
@@ -54,6 +54,9 @@ impl DbConn {
                     &trainer_name,
                     row.get(3)?,
                     row.get(4)?,
+                    row.get(5)?,
+                    row.get(6)?,
+                    row.get(7)?,
                     PathBuf::from_str(&save_path).unwrap(),
                 ),
             ))
@@ -69,6 +72,9 @@ impl DbConn {
                 &save.trainer_name,
                 &save.trainer_id,
                 &save.secret_id,
+                &save.playtime.hours,
+                &save.playtime.minutes,
+                &save.playtime.frames,
                 &save.save_path.to_string_lossy(),
             ),
         )?;

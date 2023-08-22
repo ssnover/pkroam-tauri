@@ -1,11 +1,18 @@
 import React from "react";
 
-interface Props {}
+interface Props {
+  setNewSaveSelected: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const NewSaveEntry: React.FC<Props> = () => {
+const NewSaveEntry: React.FC<Props> = ({ setNewSaveSelected }) => {
   return (
     <div>
-      <span className="game_save_entry">NEW SAVE</span>
+      <span
+        className="game_save_entry"
+        onClick={() => setNewSaveSelected(true)}
+      >
+        NEW SAVE
+      </span>
     </div>
   );
 };

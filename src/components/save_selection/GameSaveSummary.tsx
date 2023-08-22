@@ -12,19 +12,25 @@ const GameSaveSumamry: React.FC<Props> = ({ selectedSave }) => {
       <table>
         <tr>
           <td>Game</td>
-          <td>{game_name_from_game_id(selectedSave?.game_id)}</td>
+          <td>{game_name_from_game_id(selectedSave.game_id)}</td>
         </tr>
         <tr>
           <td>Trainer Name</td>
-          <td>{selectedSave?.trainer_name}</td>
+          <td>{selectedSave.trainer_name}</td>
+        </tr>
+        <tr>
+          <td>Play Time</td>
+          <td>
+            {selectedSave.playtime_hours}:{selectedSave.playtime_minutes}
+          </td>
         </tr>
         <tr>
           <td>Trainer ID</td>
-          <td>{selectedSave?.trainer_id}</td>
+          <td>{selectedSave.trainer_id}</td>
         </tr>
         <tr>
           <td>Save Path</td>
-          <td>{selectedSave?.save_path}</td>
+          <td>{selectedSave.save_path}</td>
         </tr>
       </table>
       <button>Select</button>

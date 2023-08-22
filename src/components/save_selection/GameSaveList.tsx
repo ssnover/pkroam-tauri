@@ -10,6 +10,7 @@ interface Props {
   setShowSelectedSavePopup: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedSave: React.Dispatch<React.SetStateAction<GameSave | null>>;
   setRoamSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setNewSaveSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const GameSaveList: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const GameSaveList: React.FC<Props> = ({
   setShowSelectedSavePopup,
   setSelectedSave,
   setRoamSelected,
+  setNewSaveSelected,
 }) => {
   return (
     <div className="savelist">
@@ -29,7 +31,7 @@ const GameSaveList: React.FC<Props> = ({
           setSelectedSave={setSelectedSave}
         />
       ))}
-      <NewSaveEntry />
+      <NewSaveEntry setNewSaveSelected={setNewSaveSelected} />
     </div>
   );
 };
