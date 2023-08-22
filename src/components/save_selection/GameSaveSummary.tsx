@@ -1,6 +1,9 @@
 import React from "react";
 import { GameSave } from "../../backend/GameSave";
-import { game_name_from_game_id } from "../../backend/utils";
+import {
+  game_name_from_game_id,
+  toZeroPaddedString,
+} from "../../backend/utils";
 
 interface Props {
   selectedSave: GameSave | null;
@@ -21,7 +24,8 @@ const GameSaveSumamry: React.FC<Props> = ({ selectedSave }) => {
         <tr>
           <td>Play Time</td>
           <td>
-            {selectedSave.playtime_hours}:{selectedSave.playtime_minutes}
+            {toZeroPaddedString(selectedSave.playtime_hours, 2)}:
+            {toZeroPaddedString(selectedSave.playtime_minutes, 2)}
           </td>
         </tr>
         <tr>

@@ -17,3 +17,11 @@ export function game_name_from_game_id(id: number): string {
 export function game_id_variants(): Array<number> {
   return Array.from(Array(5).keys());
 }
+
+export function toZeroPaddedString(value: number, length: number): string {
+  var valueStr = value.toString();
+  while (valueStr.length < length) {
+    valueStr = "0" + valueStr;
+  }
+  return valueStr;
+}
