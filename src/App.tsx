@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./App.css";
-import { GameSave } from "./backend/GameSave";
-import { get_game_saves } from "./backend/api";
-import GameSaveList from "./components/GameSaveList";
+import SaveSelectionScreen from "./components/SaveSelectionScreen";
 
 const App: React.FC = () => {
-  const [gameSaves, setGameSaves] = useState<GameSave[]>([]);
-
-  useEffect(() => {
-    get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
-  }, []);
-
   return (
     <div className="App">
       <span className="heading">PkROAM</span>
-      <GameSaveList saves={gameSaves} setGameSaves={setGameSaves} />
+      <br />
+      <br />
+      <SaveSelectionScreen />
     </div>
   );
 };
