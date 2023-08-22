@@ -17,6 +17,9 @@ const SaveSelectionScreen: React.FC<Props> = () => {
 
   useEffect(() => {
     get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+    setInterval(() => {
+      get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+    }, 30000);
   }, []);
 
   return (
