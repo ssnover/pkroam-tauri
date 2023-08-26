@@ -32,6 +32,18 @@ pub fn add_new_save(path: String, game_id: u32, state: tauri::State<super::AppSt
 }
 
 #[tauri::command]
+pub fn disconnect_save(save_id: u32, state: tauri::State<super::AppState>) {
+    log::debug!("UI command called: disconnect_save. save_id={save_id}");
+    state
+        .inner
+        .lock()
+        .unwrap()
+        .db_handle
+        .set_save_disconnected(save_id)
+        .unwrap();
+}
+
+#[tauri::command]
 pub fn log_debug(logline: String) {
     log::debug!("Frontend: {logline}");
 }

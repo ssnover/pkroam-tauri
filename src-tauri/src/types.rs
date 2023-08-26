@@ -35,6 +35,7 @@ impl GameSaveData {
         playtime_minutes: u32,
         playtime_frames: u32,
         save_path: PathBuf,
+        connected: bool,
     ) -> Self {
         Self {
             game,
@@ -42,7 +43,7 @@ impl GameSaveData {
             trainer_id,
             secret_id,
             playtime: Playtime::new(playtime_hours, playtime_minutes, playtime_frames),
-            connected: save_path.exists(),
+            connected,
             save_path,
         }
     }

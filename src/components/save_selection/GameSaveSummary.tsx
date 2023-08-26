@@ -1,5 +1,6 @@
 import React from "react";
 import { GameSave } from "../../backend/GameSave";
+import { disconnectSave } from "../../backend/api";
 import {
   game_name_from_game_id,
   toZeroPaddedString,
@@ -7,9 +8,13 @@ import {
 
 interface Props {
   selectedSave: GameSave | null;
+  setShowSelectedSavePopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const GameSaveSumamry: React.FC<Props> = ({ selectedSave }) => {
+const GameSaveSumamry: React.FC<Props> = ({
+  selectedSave,
+  setShowSelectedSavePopup,
+}) => {
   return selectedSave !== null ? (
     <div className="game-save-summary">
       <table>
@@ -38,6 +43,14 @@ const GameSaveSumamry: React.FC<Props> = ({ selectedSave }) => {
         </tr>
       </table>
       <button>Select</button>
+      <button
+        onClick={() => {
+          setShowSelectedSavePopup(false);
+          disconnectSave(selectedSave.id);
+        }}
+      >
+        Delete
+      </button>
     </div>
   ) : (
     <div>

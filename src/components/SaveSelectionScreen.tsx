@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GameSave } from "../backend/GameSave";
-import { add_new_save, get_game_saves } from "../backend/api";
+import { addNewSave, getGameSaves } from "../backend/api";
 import GameSaveList from "./save_selection/GameSaveList";
 import GameSaveSumamry from "./save_selection/GameSaveSummary";
 import Popup from "./Popup";
@@ -18,20 +18,20 @@ const SaveSelectionScreen: React.FC<Props> = () => {
   const [newSaveSelected, setNewSaveSelected] = useState<boolean>(false);
 
   useEffect(() => {
-    get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+    getGameSaves().then((saves: GameSave[]) => setGameSaves(saves));
   }, []);
 
   useEffect(() => {
     setInterval(() => {
-      get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+      getGameSaves().then((saves: GameSave[]) => setGameSaves(saves));
     }, 30000);
   }, []);
 
   const handleAdd = (e: React.FormEvent, savePath: string, gameId: number) => {
     e.preventDefault();
-    add_new_save(savePath, gameId);
+    addNewSave(savePath, gameId);
     setNewSaveSelected(false);
-    get_game_saves().then((saves: GameSave[]) => setGameSaves(saves));
+    getGameSaves().then((saves: GameSave[]) => setGameSaves(saves));
   };
 
   return (
@@ -45,7 +45,12 @@ const SaveSelectionScreen: React.FC<Props> = () => {
         setNewSaveSelected={setNewSaveSelected}
       />
       <Popup
-        content={<GameSaveSumamry selectedSave={selectedSave} />}
+        content={
+          <GameSaveSumamry
+            selectedSave={selectedSave}
+            setShowSelectedSavePopup={setShowSelectedSavePopup}
+          />
+        }
         trigger={showSelectedSavePopup}
         setTrigger={setShowSelectedSavePopup}
       />

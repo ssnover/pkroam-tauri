@@ -54,6 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .invoke_handler(tauri::generate_handler![
             commands::get_game_saves,
             commands::add_new_save,
+            commands::disconnect_save,
             commands::log_debug,
         ])
         .run(tauri::generate_context!())

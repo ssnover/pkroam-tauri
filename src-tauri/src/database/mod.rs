@@ -4,9 +4,10 @@ use rusqlite::Connection;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
+mod migrations;
 mod statements;
 
-const CURRENT_DATABASE_SCHEMA_VERSION: i32 = 1;
+const CURRENT_DATABASE_SCHEMA_VERSION: i32 = 2;
 
 pub struct DbConn {
     conn: Connection,
@@ -18,12 +19,12 @@ impl DbConn {
         let schema_version = get_schema_version(&conn)?;
         log::debug!("Schema version at start: {schema_version}");
 
-        let conn = Self { conn };
+        let mut conn = Self { conn };
         if schema_version == 0 {
             conn.initialize_database()?;
             log::info!("Initialized a database from scratch");
         } else if schema_version < CURRENT_DATABASE_SCHEMA_VERSION {
-            conn.migrate_database()?;
+            conn.migrate_database(schema_version, CURRENT_DATABASE_SCHEMA_VERSION)?;
         } else if schema_version > CURRENT_DATABASE_SCHEMA_VERSION {
             log::error!("PkRoam database was created by a newer version of the program, please update to the latest version");
             std::process::exit(1);
@@ -38,8 +39,16 @@ impl DbConn {
         set_schema_version(&self.conn, CURRENT_DATABASE_SCHEMA_VERSION)
     }
 
-    fn migrate_database(&self) -> rusqlite::Result<()> {
-        todo!()
+    fn migrate_database(
+        &mut self,
+        current_version: i32,
+        target_version: i32,
+    ) -> rusqlite::Result<()> {
+        for version in current_version..target_version {
+            migrations::perform_migration(&mut self.conn, version)?;
+        }
+        log::info!("Migrated database from version {current_version} to version {target_version}");
+        Ok(())
     }
 
     pub fn get_saves(&self) -> rusqlite::Result<Vec<GameSave>> {
@@ -58,6 +67,7 @@ impl DbConn {
                     row.get(6)?,
                     row.get(7)?,
                     PathBuf::from_str(&save_path).unwrap(),
+                    row.get::<_, i32>(9)? != 0,
                 ),
             ))
         })?;
@@ -76,15 +86,16 @@ impl DbConn {
                 &save.playtime.minutes,
                 &save.playtime.frames,
                 &save.save_path.to_string_lossy(),
+                1,
             ),
         )?;
         Ok(())
     }
 
-    pub fn delete_save(&self, save_id: u64) -> rusqlite::Result<()> {
+    pub fn set_save_disconnected(&self, save_id: u32) -> rusqlite::Result<()> {
         let _rows_changed = self
             .conn
-            .execute(statements::DELETE_SAVE_FROM_SAVES, (save_id,))?;
+            .execute(statements::UPDATE_SAVE_CONNECTED, (0, save_id))?;
         Ok(())
     }
 }

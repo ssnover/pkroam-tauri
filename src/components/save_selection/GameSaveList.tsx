@@ -24,13 +24,15 @@ const GameSaveList: React.FC<Props> = ({
   return (
     <div className="savelist">
       <RoamBoxEntry setRoamSelected={setRoamSelected} />
-      {saves.map((save) => (
-        <GameSaveEntry
-          save={save}
-          setShowSelectedSavePopup={setShowSelectedSavePopup}
-          setSelectedSave={setSelectedSave}
-        />
-      ))}
+      {saves
+        .filter((save) => save.connected)
+        .map((save) => (
+          <GameSaveEntry
+            save={save}
+            setShowSelectedSavePopup={setShowSelectedSavePopup}
+            setSelectedSave={setSelectedSave}
+          />
+        ))}
       <NewSaveEntry setNewSaveSelected={setNewSaveSelected} />
     </div>
   );
