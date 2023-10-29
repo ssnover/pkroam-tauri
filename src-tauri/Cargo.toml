@@ -1,13 +1,20 @@
 [package]
-name = "app"
+name = "pkroam-tauri"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["ssnover <ssnover95@gmail.com>"]
 license = ""
 repository = ""
-default-run = "app"
 edition = "2021"
 rust-version = "1.60"
+
+[lib]
+name = "pkroam_tauri_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pkroam_tauri_app"
+path = "src/bin/main.rs"
 
 [build-dependencies]
 tauri-build = { version = "1.4.0", features = [] }

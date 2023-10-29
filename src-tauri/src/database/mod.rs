@@ -7,7 +7,7 @@ use std::str::FromStr;
 mod migrations;
 mod statements;
 
-const CURRENT_DATABASE_SCHEMA_VERSION: i32 = 2;
+const CURRENT_DATABASE_SCHEMA_VERSION: i32 = 3;
 
 pub struct DbConn {
     conn: Connection,
@@ -35,6 +35,8 @@ impl DbConn {
 
     fn initialize_database(&self) -> rusqlite::Result<()> {
         self.conn.execute(statements::CREATE_TABLE_SAVES, ())?;
+        self.conn
+            .execute(statements::CREATE_TABLE_ROAM_POKEMON, ())?;
 
         set_schema_version(&self.conn, CURRENT_DATABASE_SCHEMA_VERSION)
     }
@@ -96,6 +98,26 @@ impl DbConn {
         let _rows_changed = self
             .conn
             .execute(statements::UPDATE_SAVE_CONNECTED, (0, save_id))?;
+        Ok(())
+    }
+
+    pub fn insert_new_mon(
+        &self,
+        original_trainer_id: u32,
+        secret_trainer_id: u32,
+        personality_value: u32,
+        data: Vec<u8>,
+    ) -> rusqlite::Result<()> {
+        let _rows_changed = self.conn.execute(
+            statements::INSERT_MON_INTO_MONS,
+            (
+                &original_trainer_id,
+                &secret_trainer_id,
+                &personality_value,
+                &1,
+                data.as_slice(),
+            ),
+        )?;
         Ok(())
     }
 }

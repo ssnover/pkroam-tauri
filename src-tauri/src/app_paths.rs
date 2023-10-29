@@ -1,8 +1,6 @@
 use std::path::PathBuf;
 use std::str::FromStr;
 
-use super::Cli;
-
 pub struct AppPaths {
     config_dir: PathBuf,
 }
@@ -36,14 +34,14 @@ impl AppPaths {
     }
 }
 
-pub fn get_app_paths(args: &Cli) -> Result<AppPaths, String> {
-    let config_dir = get_config_dir(args)?;
+pub fn get_app_paths(config_dir: Option<PathBuf>) -> Result<AppPaths, String> {
+    let config_dir = get_config_dir(config_dir)?;
     let _ = std::fs::create_dir_all(&config_dir);
     Ok(AppPaths::from_dir(config_dir))
 }
 
-fn get_config_dir(args: &Cli) -> Result<PathBuf, String> {
-    if let Some(config_dir) = args.config_dir.clone() {
+fn get_config_dir(config_dir: Option<PathBuf>) -> Result<PathBuf, String> {
+    if let Some(config_dir) = config_dir.clone() {
         Ok(config_dir)
     } else if let Ok(Ok(env_config_dir)) =
         std::env::var("PKROAM_CONFIG_DIR").map(|path_str| PathBuf::from_str(&path_str))

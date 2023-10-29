@@ -20,3 +20,16 @@ pub const INSERT_SAVE_INTO_SAVES: &str = "INSERT INTO saves (
     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)";
 
 pub const UPDATE_SAVE_CONNECTED: &str = "UPDATE saves SET connected = ? WHERE id = ?";
+
+pub const CREATE_TABLE_ROAM_POKEMON: &str = "CREATE TABLE monsters (
+    id INTEGER PRIMARY KEY,
+    original_trainer_id INTEGER,
+    original_secret_id INTEGER,
+    personality_value INTEGER,
+    data_format INTEGER,
+    data BLOB
+)";
+
+pub const INSERT_MON_INTO_MONS: &str = "INSERT INTO monsters (
+    original_trainer_id, original_secret_id, personality_value, data_format, data)
+    VALUES (?1, ?2, ?3, ?4, ?5)";

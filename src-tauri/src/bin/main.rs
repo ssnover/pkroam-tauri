@@ -2,15 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use clap::Parser;
-use database::DbConn;
-use std::{path::PathBuf, sync::Mutex};
-
-mod app_paths;
-mod commands;
-mod database;
-mod logging;
-mod models;
-mod types;
+use pkroam_tauri_lib::{app_state::*, *};
+use std::path::PathBuf;
 
 #[derive(Parser)]
 pub struct Cli {
@@ -20,18 +13,10 @@ pub struct Cli {
     enable_debug: bool,
 }
 
-pub struct AppState {
-    inner: Mutex<AppStateInner>,
-}
-
-struct AppStateInner {
-    db_handle: DbConn,
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::parse();
 
-    let app_paths = match app_paths::get_app_paths(&args) {
+    let app_paths = match app_paths::get_app_paths(args.config_dir) {
         Ok(app_paths) => app_paths,
         Err(err) => {
             eprintln!("{err}");
@@ -45,9 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     let db_handle = database::DbConn::new(&app_paths.get_database_path())?;
 
-    let app_state = AppState {
-        inner: Mutex::new(AppStateInner { db_handle }),
-    };
+    let app_state = AppState::new(db_handle);
 
     tauri::Builder::default()
         .manage(app_state)
