@@ -14,6 +14,10 @@ pub const CREATE_TABLE_SAVES: &str = "CREATE TABLE saves (
 pub const SELECT_SAVES: &str =
     "SELECT id, game, trainer_name, trainer_id, secret_id, playtime_hours, playtime_minutes, playtime_frames, save_path, connected FROM saves";
 
+pub const SELECT_SAVE: &str =
+    "SELECT id, game, trainer_name, trainer_id, secret_id, playtime_hours, playtime_minutes, playtime_frames, save_path, connected FROM saves
+    WHERE id = (?1)";
+
 pub const INSERT_SAVE_INTO_SAVES: &str = "INSERT INTO saves (
     game, trainer_name, trainer_id, secret_id, 
     playtime_hours, playtime_minutes, playtime_frames, save_path, connected) 

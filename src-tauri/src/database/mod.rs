@@ -49,8 +49,29 @@ impl DbConn {
         for version in current_version..target_version {
             migrations::perform_migration(&mut self.conn, version)?;
         }
+        set_schema_version(&self.conn, target_version)?;
         log::info!("Migrated database from version {current_version} to version {target_version}");
         Ok(())
+    }
+
+    pub fn get_save(&self, save_id: u32) -> rusqlite::Result<GameSave> {
+        self.conn
+            .query_row_and_then(statements::SELECT_SAVE, (save_id,), |row| {
+                Ok(GameSave::new(
+                    row.get(0)?,
+                    GameSaveData::new(
+                        Game::from_u32(row.get(1)?).unwrap(),
+                        row.get::<_, String>(2)?.as_str(),
+                        row.get(3)?,
+                        row.get(4)?,
+                        row.get(5)?,
+                        row.get(6)?,
+                        row.get(7)?,
+                        PathBuf::from_str(row.get::<_, String>(8)?.as_str()).unwrap(),
+                        row.get::<_, i32>(9)? != 0,
+                    ),
+                ))
+            })
     }
 
     pub fn get_saves(&self) -> rusqlite::Result<Vec<GameSave>> {
@@ -107,7 +128,7 @@ impl DbConn {
         secret_trainer_id: u32,
         personality_value: u32,
         data: Vec<u8>,
-    ) -> rusqlite::Result<()> {
+    ) -> rusqlite::Result<u32> {
         let _rows_changed = self.conn.execute(
             statements::INSERT_MON_INTO_MONS,
             (
@@ -118,7 +139,8 @@ impl DbConn {
                 data.as_slice(),
             ),
         )?;
-        Ok(())
+        let row_id = self.conn.last_insert_rowid();
+        Ok(row_id as u32)
     }
 }
 
